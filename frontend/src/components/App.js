@@ -25,7 +25,7 @@ const App = () => {
   };
 
   const handleClick = (ev) => {
-    ev.preventDefault()
+    ev.preventDefault();
     setSubStatus("pending");
 
     fetch("/order", {
@@ -39,7 +39,7 @@ const App = () => {
       .then((res) => res.json())
       .then((json) => {
         const { status, error } = json;
-        if (status === "success") {       
+        if (status === "success") {
           setSubStatus("confirmed");
         } else if (error) {
           setSubStatus("error");
@@ -63,7 +63,11 @@ const App = () => {
           {subStatus === "error" && <ErrorMsg>{errMessage}</ErrorMsg>}
         </>
       ) : (
-        <ConfirmationMsg />
+        <ConfirmationMsg
+          givenName={formData.givenName}
+          order={formData.order}
+          province={formData.province}
+        />
       )}
     </Wrapper>
   );

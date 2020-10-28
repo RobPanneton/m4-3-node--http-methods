@@ -3,6 +3,8 @@
 // import the needed node_modules.
 const express = require("express");
 const morgan = require("morgan");
+const bodyParser = require("body-parser");
+const { stock, customers } = require("./data/inventory");
 
 express()
   // Below are methods that are included in express(). We chain them for convenience.
@@ -18,6 +20,74 @@ express()
   // Nothing to modify above this line
   // ---------------------------------
   // add new endpoints here 👇
+  .post("/order", (req, res) => {
+    const {
+      order,
+      size,
+      givenName,
+      surname,
+      email,
+      address,
+      province,
+      postcode,
+      country,
+    } = req.body;
+
+    const stockData = stock;
+    const customerData = customers;
+
+    const isCustomerInDB = customerData.find((customer) => {
+      (customer.givenName.toUpperCase() === givenName.toUpperCase() &&
+        custumer.surName.toUpperCase() === surname.toUpperCase()) ||
+        customer.email.toUpperCase() === email.toUpperCase() ||
+        customer.address.toUpperCase() === address.toUpperCase();
+    });
+
+    if (order === "shirt" && stockData[order][size] === 0) {
+      res.status(400).json({
+        status: "error",
+        error: "unavailable",
+      });
+    } else if (stockData[order] === 0) {
+      res.status(400).json({
+        status: "error",
+        error: "unavailable",
+      });
+    } else if (isCustomerInDB) {
+      res.status(400).json({
+        status: "error",
+        error: "repeat-customer",
+      });
+    } else if (!email.includes("@")) {
+      res.status(400).json({
+        status: "error",
+        error: "missing-data",
+      });
+    } else if (country.toUpperCase() !== "CANADA") {
+      res.status(400).json({
+        status: "error",
+        error: "undeliverable",
+      });
+    } else if (
+      order === "undefined" ||
+      givenName === "" ||
+      surname === "" ||
+      email === "" ||
+      address === "" ||
+      province === "" ||
+      postcode === "" ||
+      country === ""
+    ) {
+      res.status(400).json({
+        status: "error",
+        error: "missing-data",
+      });
+    } else {
+      res.status(200).json({
+        status: "success",
+      });
+    }
+  })
 
   // add new endpoints here ☝️
   // ---------------------------------
